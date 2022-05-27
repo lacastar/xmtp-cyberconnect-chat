@@ -12,6 +12,7 @@ import XmtpInfoPanel from './XmtpInfoPanel'
 import UserMenu from './UserMenu'
 import BackArrow from './BackArrow'
 import FilterButton from './FilterButton'
+import {Filter} from '../helpers/constants'
 
 const NavigationColumnLayout: React.FC = ({ children }) => (
   <aside className="flex w-full md:w-84 flex-col flex-grow fixed inset-y-0">
@@ -105,7 +106,7 @@ const Layout: React.FC = ({ children }) => {
   }
   const prevSigner = usePrevious(signer)
 
-  const [filter, setFilter] = useState<boolean>(false);
+  const [filter, setFilter] = useState<Filter>(Filter.Connected);
   
   useEffect(() => {
     if (!signer && prevSigner) {

@@ -4,10 +4,11 @@ import { ArrowSmRightIcon } from '@heroicons/react/solid'
 import useXmtp from '../hooks/useXmtp'
 import ConversationsList from './ConversationsList'
 import Loader from './Loader'
+import {Filter} from '../helpers/constants'
 
 type NavigationPanelProps = {
   onConnect: () => Promise<void>
-  filter: boolean
+  filter: Filter
   followings: {[x: string]: boolean} | undefined
 }
 
@@ -16,7 +17,7 @@ type ConnectButtonProps = {
 }
 
 type ConversationsPanelProps = {
-  filter: boolean
+  filter: Filter
   walletAddress: string | undefined
   followings: {[x: string]: boolean} | undefined
 }
@@ -97,11 +98,18 @@ const ConversationsPanel = ({filter, followings}: ConversationsPanelProps): JSX.
   }
 
   let conversationsToDisplay = conversations;
-  if (filter && followings) {
-    conversationsToDisplay = conversations.filter(
-      conversation => {
-        return followings[conversation.peerAddress.toLowerCase()]
-      }
+  if (followings) {
+    if(filter === Filter.Connected)
+      conversationsToDisplay = conversations.filter(
+        conversation => {
+          return followings[conversation.peerAddress.toLowerCase()]
+        }
+      );
+    if(filter === Filter.Invites)
+      conversationsToDisplay = conversations.filter(
+        conversation => {
+          return conversation.messages.length===1 && !followings[conversation.peerAddress.toLowerCase()]
+        }
     );
   }
   
