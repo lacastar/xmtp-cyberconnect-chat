@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import useXmtp from '../hooks/useXmtp'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
@@ -11,6 +11,7 @@ import NavigationPanel from './NavigationPanel'
 import XmtpInfoPanel from './XmtpInfoPanel'
 import UserMenu from './UserMenu'
 import BackArrow from './BackArrow'
+import FilterButton from './FilterButton'
 
 const NavigationColumnLayout: React.FC = ({ children }) => (
   <aside className="flex w-full md:w-84 flex-col flex-grow fixed inset-y-0">
@@ -35,7 +36,11 @@ const TopBarLayout: React.FC = ({ children }) => (
   </div>
 )
 
-const ConversationLayout: React.FC = ({ children }) => {
+type ConversationLayoutProps = {
+  children: unknown,
+}
+
+const ConversationLayout: React.FC<ConversationLayoutProps> = ({ children}) => {
   const router = useRouter()
   const recipientWalletAddress = router.query.recipientWalletAddr as string
 
@@ -57,7 +62,7 @@ const ConversationLayout: React.FC = ({ children }) => {
           <BackArrow onClick={handleBackArrowClick} />
         </div>
         <RecipientControl
-          recipientWalletAddress={recipientWalletAddress}
+          recipientWalletAddress={recipientWalletAddress?recipientWalletAddress:""}
           onSubmit={handleSubmit}
         />
       </TopBarLayout>
@@ -72,6 +77,7 @@ const Layout: React.FC = ({ children }) => {
     disconnect: disconnectXmtp,
     walletAddress,
     client,
+    followings,
   } = useXmtp()
   const router = useRouter()
   const {
@@ -99,6 +105,8 @@ const Layout: React.FC = ({ children }) => {
   }
   const prevSigner = usePrevious(signer)
 
+  const [filter, setFilter] = useState<boolean>(false);
+  
   useEffect(() => {
     if (!signer && prevSigner) {
       disconnectXmtp()
@@ -113,6 +121,7 @@ const Layout: React.FC = ({ children }) => {
     connect()
   }, [signer, prevSigner, connectXmtp, disconnectXmtp])
 
+  
   return (
     <>
       <Head>
@@ -126,9 +135,10 @@ const Layout: React.FC = ({ children }) => {
         <NavigationView>
           <NavigationColumnLayout>
             <NavigationHeaderLayout>
+              {walletAddress && client && <FilterButton filter={filter} setFilter={setFilter}/>}
               {walletAddress && client && <NewMessageButton />}
             </NavigationHeaderLayout>
-            <NavigationPanel onConnect={handleConnect} />
+            <NavigationPanel onConnect={handleConnect} filter={filter} followings={followings}/>
             <UserMenu
               onConnect={handleConnect}
               onDisconnect={handleDisconnect}
@@ -137,7 +147,9 @@ const Layout: React.FC = ({ children }) => {
         </NavigationView>
         <ConversationView>
           {walletAddress && client ? (
-            <ConversationLayout>{children}</ConversationLayout>
+            <ConversationLayout>
+              {children}
+            </ConversationLayout>
           ) : (
             <XmtpInfoPanel onConnect={handleConnect} />
           )}

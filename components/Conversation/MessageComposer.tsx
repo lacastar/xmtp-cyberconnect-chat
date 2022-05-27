@@ -4,12 +4,20 @@ import messageComposerStyles from '../../styles/MessageComposer.module.scss'
 import upArrowGreen from '../../public/up-arrow-green.svg'
 import upArrowGrey from '../../public/up-arrow-grey.svg'
 import { useRouter } from 'next/router'
+import useXmtp from '../../hooks/useXmtp'
 
 type MessageComposerProps = {
+  toAddress: string
+  firstMessage: boolean
   onSend: (msg: string) => Promise<void>
 }
 
-const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
+const MessageComposer = ({ toAddress, firstMessage, onSend }: MessageComposerProps): JSX.Element => {
+  const {
+    followers,
+    followings,
+    toggleFollowing,
+  } = useXmtp()
   const [message, setMessage] = useState('')
   const router = useRouter()
 
@@ -27,10 +35,14 @@ const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
         return
       }
       setMessage('')
+      if ( !followings[toAddress.toLowerCase()]) {
+        toggleFollowing(toAddress)
+      }
       await onSend(message)
     },
-    [onSend, message]
+    [message, onSend, followings, toAddress, toggleFollowing]
   )
+ 
   return (
     <div
       className={classNames(
@@ -75,7 +87,7 @@ const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
         />
         <button type="submit" className={messageComposerStyles.arrow}>
           <img
-            src={message ? upArrowGreen : upArrowGrey}
+            src={message && (firstMessage || followers[toAddress.toLowerCase()] )  ? upArrowGreen : upArrowGrey}
             alt="send"
             height={32}
             width={32}

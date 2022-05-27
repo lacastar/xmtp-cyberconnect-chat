@@ -7,19 +7,31 @@ import Loader from './Loader'
 
 type NavigationPanelProps = {
   onConnect: () => Promise<void>
+  filter: boolean
+  followings: {[x: string]: boolean} | undefined
 }
 
 type ConnectButtonProps = {
   onConnect: () => Promise<void>
 }
 
-const NavigationPanel = ({ onConnect }: NavigationPanelProps): JSX.Element => {
+type ConversationsPanelProps = {
+  filter: boolean
+  walletAddress: string | undefined
+  followings: {[x: string]: boolean} | undefined
+}
+
+const NavigationPanel = ({ onConnect, filter, followings }: NavigationPanelProps): JSX.Element => {
   const { walletAddress } = useXmtp()
 
   return (
     <div className="flex-grow flex flex-col">
       {walletAddress ? (
-        <ConversationsPanel />
+        <ConversationsPanel 
+          filter = {filter}
+          walletAddress = {walletAddress}
+          followings = {followings}
+        />
       ) : (
         <NoWalletConnectedMessage>
           <ConnectButton onConnect={onConnect} />
@@ -63,7 +75,7 @@ const ConnectButton = ({ onConnect }: ConnectButtonProps): JSX.Element => {
   )
 }
 
-const ConversationsPanel = (): JSX.Element => {
+const ConversationsPanel = ({filter, followings}: ConversationsPanelProps): JSX.Element => {
   const { conversations, loadingConversations, client } = useXmtp()
   if (!client) {
     return (
@@ -84,9 +96,18 @@ const ConversationsPanel = (): JSX.Element => {
     )
   }
 
-  return conversations && conversations.length > 0 ? (
+  let conversationsToDisplay = conversations;
+  if (filter && followings) {
+    conversationsToDisplay = conversations.filter(
+      conversation => {
+        return followings[conversation.peerAddress.toLowerCase()]
+      }
+    );
+  }
+  
+  return conversationsToDisplay && conversationsToDisplay.length > 0 ? (
     <nav className="flex-1 pb-4 space-y-1">
-      <ConversationsList conversations={conversations} />
+      <ConversationsList conversations={conversationsToDisplay} />
     </nav>
   ) : (
     <NoConversationsMessage />

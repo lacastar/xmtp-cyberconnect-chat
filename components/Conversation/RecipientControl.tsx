@@ -3,8 +3,10 @@ import { useRouter } from 'next/router'
 import AddressInput from '../AddressInput'
 import useWallet from '../../hooks/useWallet'
 import useXmtp from '../../hooks/useXmtp'
+import FollowButton from '../FollowButton'
+
 type RecipientInputProps = {
-  recipientWalletAddress: string | undefined
+  recipientWalletAddress: string
   onSubmit: (address: string) => Promise<void>
 }
 
@@ -130,20 +132,30 @@ const RecipientControl = ({
           <button type="submit" className="hidden" />
         </div>
       </form>
-
+      
       {recipientInputMode === RecipientInputMode.Submitted ? (
-        <div className="text-md text-n-300 text-sm font-mono ml-10 md:ml-8 pb-1 md:pb-[1px]">
-          {hasName ? recipientWalletAddress : <br />}
-        </div>
+          <div className="flex justify-between text-md text-n-300 text-sm font-mono ml-10 md:ml-8 pb-1 md:pb-[1px]">
+            {hasName ? recipientWalletAddress : <br />}
+            <FollowButton 
+              toAddress={recipientWalletAddress}
+            />
+          </div>
       ) : (
-        <div className="text-sm md:text-xs text-n-300 ml-[29px] pl-2 md:pl-0 pb-1 md:pb-[3px]">
+        <div className="flex justify-between text-sm md:text-xs text-n-300 ml-[29px] pl-2 md:pl-0 pb-1 md:pb-[3px]">
           {recipientInputMode === RecipientInputMode.NotOnNetwork &&
             'Recipient is not on the XMTP network'}
           {recipientInputMode === RecipientInputMode.FindingEntry &&
             'Finding ENS domain...'}
           {recipientInputMode === RecipientInputMode.InvalidEntry &&
             'Please enter a valid wallet address'}
-          {recipientInputMode === RecipientInputMode.ValidEntry && <br />}
+          {recipientInputMode === RecipientInputMode.ValidEntry && 
+            <>
+              <br/>
+              <FollowButton 
+                toAddress={recipientWalletAddress}
+              />
+            </>
+          }
         </div>
       )}
     </div>

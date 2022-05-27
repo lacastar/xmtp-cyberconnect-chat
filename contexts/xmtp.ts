@@ -18,6 +18,10 @@ export type XmtpContextType = {
   dispatchMessages?: Dispatch<MessageStoreEvent>
   connect: (wallet: Signer) => void
   disconnect: () => void
+  followings : {[x: string]: boolean}
+  followers : {[x: string]: boolean}
+  toggleFollowing: (toAddress: string) => void
+  getConnections: () => void
 }
 
 export const XmtpContext = createContext<XmtpContextType>({
@@ -29,6 +33,10 @@ export const XmtpContext = createContext<XmtpContextType>({
   getMessages: () => [],
   connect: () => undefined,
   disconnect: () => undefined,
+  followings: {},
+  followers: {},
+  toggleFollowing: () => undefined,
+  getConnections: () => undefined
 })
 
 export default XmtpContext
