@@ -27,6 +27,10 @@ I believe all of the requierements are met that were listed in the bounty descri
 
 Also commited some console error fixes that were related to multiple elements with the same key.
 
+I have introduced only two new components to the UI: a Follow and a Filter button. The first one also gives feedback on the current connection towards the peer, and is integrated with the address checking mechanism already present in the example app. The latter changes the filtering of the conversations. The message composer component received a new feature that disables message sending after the initial request message until the peer answers. The CyberConnect logic was extracted to a provider to make it reusable.
+
+Testing and building remained the same as before.
+
 Since this is my first React project, please be forgiving for any uncommon coding practices, it is possible that I have not arrived yet at the designated part of the tutorial where it is discussed ;) 
 
 See the original readme below:
