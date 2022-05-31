@@ -3,6 +3,9 @@ Building on the React Chat Example application this submission integrates CyberC
 1. Adds filtering for the following conditions: all conversations, connections only, invites only
 2. When the first message is sent to a peer, it automatically creates a follow relation with CyberConnect - it is also possible to follow and unfollow the specified address
 
+[Live demo](https://expensive-meat.surge.sh/)
+[Video presentation](https://www.veed.io/view/7b103565-b5b8-41ae-ab07-d0ecb162974a)
+
 A heuristic solution is used to implement the happy path and fulfill the requirements listed as a fully-featured UX:
 1. When a message is sent to a new address it also creates a CyberConnect FOLLOW connection - and treated as a new connection request towards the peer
 2. It is not poosible to send any further messages until the remote peer answers (and creates a backwards FOLLOW connection)
