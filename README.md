@@ -4,7 +4,7 @@ Building on the React Chat Example application this submission integrates CyberC
 2. When the first message is sent to a peer, it automatically creates a follow relation with CyberConnect - it is also possible to follow and unfollow the specified address
 
 Links:
-1. [Live demo](https://expensive-meat.surge.sh/)
+1. [Live demo](https://xmtp-chat.surge.sh)
 2. [Video presentation](https://www.veed.io/view/7b103565-b5b8-41ae-ab07-d0ecb162974a)
 
 A heuristic solution is used to implement the happy path and fulfill the requirements listed as a fully-featured UX:
