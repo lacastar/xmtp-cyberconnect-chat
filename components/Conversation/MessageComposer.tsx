@@ -31,7 +31,7 @@ const MessageComposer = ({ toAddress, firstMessage, onSend }: MessageComposerPro
   const onSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!message) {
+      if (!(message && (firstMessage || followers[toAddress.toLowerCase()]))) {
         return
       }
       setMessage('')
@@ -40,7 +40,7 @@ const MessageComposer = ({ toAddress, firstMessage, onSend }: MessageComposerPro
       }
       await onSend(message)
     },
-    [message, onSend, followings, toAddress, toggleFollowing]
+    [message, firstMessage, followers, toAddress, followings, onSend, toggleFollowing]
   )
  
   return (
